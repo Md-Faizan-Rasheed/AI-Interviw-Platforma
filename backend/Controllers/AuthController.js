@@ -3,6 +3,8 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const signup = async (req,res)=>{
+  console.log("Received data:", req.body);
+
 try {
     const {company_name,years_old,field_of_work,email,password,emp_size} = req.body;
 

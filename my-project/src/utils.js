@@ -1,7 +1,7 @@
-import { toast } from 'react-toastify';
+import { toast,ToastContainer } from 'react-toastify';
 
 export const handleSucess = (msg)=>{
-    toast.sucess(msg,
+    toast.success(msg,
        { position:"top-right"}
     )
 }

@@ -65,9 +65,9 @@ const Navbar = () => {
           </Link>
         </li>
         <li>
-          <Link to="/JDcreation" className="hover:text-green-600 block">
+          {/* <Link to="/JDcreation" className="hover:text-green-600 block">
             JD Creation
-          </Link>
+          </Link> */}
         </li>
         <li>
           <Link to="/pricing" className="hover:text-green-600 block">

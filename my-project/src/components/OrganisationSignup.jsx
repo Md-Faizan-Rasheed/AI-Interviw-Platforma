@@ -1,5 +1,8 @@
 import { useState } from "react";
-import { handleError } from "../utils";
+import { handleError, handleSucess } from "../utils";
+import {Navigate, useNavigate } from "react-router-dom";
+import { toast,ToastContainer } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 const OrganisationSignup = () => {
   const [signupInfo, setSignupInfo] = useState({
@@ -10,7 +13,7 @@ const OrganisationSignup = () => {
     password:'',
     emp_size:'',
   });
-
+const navigate = useNavigate();
   const handleChange = (e) => {
     const { name, value } = e.target;
     setSignupInfo((prev) => ({
@@ -27,21 +30,38 @@ const OrganisationSignup = () => {
       return handleError("All fields are required. Please fill out every field.");
     }
 
-    console.log("Signup Info Submitted:", signupInfo);
+    const formattedSignupInfo = {
+      ...signupInfo,
+      years_old: parseInt(years_old, 10),
+      emp_size: parseInt(emp_size, 10),
+    };
+    console.log("Signup Info Submitted:", formattedSignupInfo);
     // Add logic here to send signupInfo to the backend
 
-    try{
-      const url ="http://localhost:8080/auth/signup";
-      const response = await fetch(url,{
-        method:"POST",
-        heades:{
-          'Content-Type':'application/json',
+    try {
+      const url = "http://localhost:8080/auth/signup";
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-        body:JSON.stringify(signupInfo)
+        body: JSON.stringify(formattedSignupInfo),
       });
-
       const result = await response.json();
       console.log(result);
+      const {sucess,message,error} = result;
+
+      if(sucess){
+        // handleSucess(message);
+        setTimeout(() =>{
+          navigate("/SignIn");
+        },1000)
+      }else if(error){
+        const details = error?.details[0].message
+      handleError(details);
+      }else if(!sucess){
+         handleError(message);
+      }
     }catch (error) {
        handleError(error);
     }
@@ -50,6 +70,7 @@ const OrganisationSignup = () => {
   return (
     <div className="flex flex-col lg:flex-row flex-grow">
       {/* Left Side: Sign-Up Form */}
+      <ToastContainer/>
       <div className="flex flex-col justify-center bg-gray-100 w-full lg:w-1/2 p-8 lg:p-16">
         <h2 className="text-3xl font-semibold text-gray-800 mb-4">Sign Up</h2>
         <p className="text-gray-600 mb-8">
@@ -142,7 +163,7 @@ const OrganisationSignup = () => {
         {/* Sign In Link */}
         <p className="text-center text-sm text-gray-600">
           Already have an account?{" "}
-          <a href="/signin" className="text-blue-600 hover:underline">
+          <a href="/SignIn" className="text-blue-600 hover:underline">
             Sign In
           </a>
         </p>
