@@ -2,8 +2,15 @@ import { useState } from "react";
 import {Navigate, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import Onavbar from "./Onavbar";
+// import { AuthContext } from '../../Context/AuthContext.jsx';
+// import { useContext } from 'react';
 
 const Dashboard = () => {
+  // const { isLoggedIn } = useContext(AuthContext);
+  // if (!isLoggedIn) {
+  //   return <Navigate to="/SignIn" replace />;
+  // }
+
   const [isOpen, setIsOpen] = useState(true);
 
   const navigate = useNavigate();

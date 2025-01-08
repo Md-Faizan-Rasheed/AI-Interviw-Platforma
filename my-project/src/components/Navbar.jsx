@@ -1,11 +1,23 @@
 
 // import React, { useState } from "react";
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../Context/AuthContext.jsx";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  // const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
+  const navigate = useNavigate();
+  const { isLoggedIn, logout } = useContext(AuthContext);
+  // const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
 
+  // Handle logout
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("loggedInUser");
+    // setIsLoggedIn(false);
+    navigate("/SignIn"); // Redirect to the home page
+  };
   return (
     <nav className="bg-white shadow-md py-4 px-8 flex justify-between items-center">
       {/* Logo */}
@@ -47,7 +59,7 @@ const Navbar = () => {
       <ul
         className={`${
           menuOpen ? "flex" : "hidden"
-        } md:flex flex-col md:flex-row absolute md:relative top-16 md:top-auto left-0 md:left-auto w-full md:w-auto bg-white md:bg-transparent text-gray-600 space-y-4 md:space-y-0 items-center justify-center sm:gap-1 md:gap-2 lg:gap-8 p-4 md:p-0`}
+        } md:flex flex-col md:flex-row absolute md:relative top-16 md:top-auto left-0 md:left-auto w-full md:w-auto bg-white md:bg-transparent text-gray-600 space-y-4 md:space-y-0 items-center justify-around sm:gap-1 md:gap-2 lg:gap-8 p-4 md:p-0`}
       >
         <li>
           <Link to="/" className="hover:text-green-600 block">
@@ -65,13 +77,13 @@ const Navbar = () => {
           </Link>
         </li>
         <li>
-          {/* <Link to="/JDcreation" className="hover:text-green-600 block">
-            JD Creation
-          </Link> */}
-        </li>
-        <li>
           <Link to="/pricing" className="hover:text-green-600 block">
             Pricing
+          </Link>
+        </li>
+        <li>
+          <Link to="/JDcreation" className="hover:text-green-600 block">
+            JDcreation
           </Link>
         </li>
         <li>
@@ -79,31 +91,53 @@ const Navbar = () => {
             Contact
           </Link>
         </li>
-        {/* Mobile Buttons */}
-        <li className="flex flex-col space-y-4 md:hidden w-full items-center">
-          <Link
-            to="/Popuppreplace"
-            className="text-gray-600 hover:text-green-600 font-medium"
-          >
-            Sign In
-          </Link>
-          <button className="bg-lime-400 text-blue-800 font-bold py-2 px-6 rounded-full hover:bg-lime-300">
+
+      </ul>
+<div className="flex flex-row gap-5 justify-center items-center">
+{isLoggedIn ? (
+          <div>
+            <button
+              onClick={handleLogout}
+              className="text-red-600 hover:text-red-800 font-medium"
+            >
+              Logout
+            </button>
+          </div>
+        ) : (
+          <div>
+            <Link to="/signin" className="text-gray-600 hover:text-green-600">
+              Sign In
+            </Link>
+          </div>
+        )}
+        <div>
+        <button className="bg-lime-400 text-blue-800 font-bold py-2 px-6 rounded-full hover:bg-lime-300">
             Get Started
           </button>
-        </li>
-      </ul>
-
+        </div>
+</div>
       {/* Desktop Buttons */}
-      <div className="hidden md:flex space-x-4">
-        <button className="text-gray-600 hover:text-green-600 font-medium">
-          <Link to="/Popuppreplace" className="hover:text-green-600 block">
-            Sign In
-          </Link>
-        </button>
+      {/* <div className="hidden md:flex space-x-4">
+      {isLoggedIn ? (
+          <li>
+            <button
+              onClick={logout}
+              className="text-red-600 hover:text-red-800 font-medium"
+            >
+              Logout
+            </button>
+          </li>
+        ) : (
+          <li>
+            <Link to="/signin" className="text-gray-600 hover:text-green-600">
+              Sign In
+            </Link>
+          </li>
+        )}
         <button className="bg-lime-400 text-blue-800 font-bold py-2 px-6 rounded-full hover:bg-lime-300">
           Get Started
         </button>
-      </div>
+      </div> */}
     </nav>
   );
 };

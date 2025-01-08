@@ -2,12 +2,14 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { handleError, handleSucess } from "../utils";
+import { AuthContext } from "../context/AuthContext.jsx";
 
 const SignIn = () => {
   const [loginInfo, setLoginInfo] = useState({
     email: "",
     password: "",
   });
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
 
   const navigate = useNavigate();
 
@@ -31,6 +33,7 @@ const SignIn = () => {
     }
 
     try {
+
       const response = await fetch("http://localhost:8080/auth/login", {
         method: "POST",
         headers: {
@@ -41,12 +44,13 @@ const SignIn = () => {
 
       const result = await response.json();
        const {sucess,message,jwtToken,name,error} = result;
+
       if (sucess) {
         handleSucess(message);
         localStorage.setItem('token',jwtToken);
-        localStorage.setItem('loggedInUser',name);
-        // navigate("/dashboard"); // Replace with your target route
-           
+        localStorage.setItem('loggedInUser',name); 
+        setIsLoggedIn(true); // Update the state to indicate the user is logged in
+
         setTimeout(() => {
           navigate('/JDcreation');
         })
@@ -65,6 +69,12 @@ const SignIn = () => {
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("loggedInUser");
+    setIsLoggedIn(false);
+    navigate("/SignIn"); // Redirect to the home page
+  };
   return (
     <div className="flex flex-col lg:flex-row h-screen">
       {/* Left Side: Sign-In Form */}
@@ -73,8 +83,13 @@ const SignIn = () => {
           <h1 className="text-2xl font-bold text-gray-800">kerclunk.</h1>
         </div>
 
-        <h2 className="text-3xl font-semibold text-gray-800 mb-4">Sign In</h2>
+        <h2 className="text-3xl font-semibold text-gray-800 mb-4">
+          {/* Sign In */}
+          {isLoggedIn ? "Welcome Back!" : "Sign In"}
 
+          </h2>
+
+          {!isLoggedIn ? (
         <form onSubmit={handleSubmit}>
           {/* Email Input */}
           <label htmlFor="email" className="block mb-2 text-sm text-gray-600">
@@ -125,6 +140,14 @@ const SignIn = () => {
             Sign In
           </button>
         </form>
+        ) : (
+          <button
+            onClick={handleLogout}
+            className="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-3 px-4 rounded-lg transition"
+          >
+            Logout
+          </button>
+        )}
 
         {/* Sign Up Link */}
         <p className="text-center text-sm text-gray-600">
