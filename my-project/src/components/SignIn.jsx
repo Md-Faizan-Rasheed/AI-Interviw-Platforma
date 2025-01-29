@@ -1,10 +1,14 @@
 
-import React, { useState } from "react";
+import React, { useState,useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { handleError, handleSucess } from "../utils";
-import { AuthContext } from "../context/AuthContext.jsx";
+import {UserContext} from "../App"
+// import {userContext } from "../src/App";
 
 const SignIn = () => {
+  const {state,dispatch} = useContext(UserContext);
+
+  
   const [loginInfo, setLoginInfo] = useState({
     email: "",
     password: "",
@@ -54,7 +58,7 @@ const SignIn = () => {
         setTimeout(() => {
           navigate('/JDcreation');
         })
-
+           dispatch({type:"USER",payload:true})
       }else if(error){
              const details = error?.details[0].message
            handleError(details);
@@ -73,6 +77,8 @@ const SignIn = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("loggedInUser");
     setIsLoggedIn(false);
+    dispatch({type:"USER",payload:false})
+
     navigate("/SignIn"); // Redirect to the home page
   };
   return (
@@ -85,11 +91,11 @@ const SignIn = () => {
 
         <h2 className="text-3xl font-semibold text-gray-800 mb-4">
           {/* Sign In */}
-          {isLoggedIn ? "Welcome Back!" : "Sign In"}
+          {state ? "Welcome Back!" : "Sign In"}
 
           </h2>
 
-          {!isLoggedIn ? (
+          {!state ? (
         <form onSubmit={handleSubmit}>
           {/* Email Input */}
           <label htmlFor="email" className="block mb-2 text-sm text-gray-600">

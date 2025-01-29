@@ -67,7 +67,7 @@ const Aiquestion =  () => {
       ]);
 
       const handleSaveAndNext = () =>{
-        navigate('/Preview&Publish',{ state:{ dataforAi, formattedQuestions: questions} });
+        navigate('/preview-and-publish',{ state:{ dataforAi, formattedQuestions: questions} });
       }
   return (
     <div className="flex h-screen bg-gray-100">

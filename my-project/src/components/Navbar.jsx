@@ -1,23 +1,66 @@
 
-// import React, { useState } from "react";
-import { useContext, useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { AuthContext } from "../Context/AuthContext.jsx";
+import  { useContext, useState } from "react";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import {UserContext} from "../App"
+import CustomNavLink from './CustomNavLink';
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   // const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
   const navigate = useNavigate();
-  const { isLoggedIn, logout } = useContext(AuthContext);
   // const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
-
+const {state,dispatch} = useContext(UserContext)
   // Handle logout
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("loggedInUser");
     // setIsLoggedIn(false);
+    dispatch({type:"USER",payload:false})
+
     navigate("/SignIn"); // Redirect to the home page
   };
+
+  const RenderMenu = () =>{
+    if(state){
+      return(
+        <div>
+       <NavLink
+  to="/signin"
+  onClick={handleLogout}
+  className={({ isActive }) =>
+    isActive
+      ? "bg-green-600 text-white rounded-lg px-4 py-2"
+      : "text-red-700 font-bold hover:text-green-600 hover:bg-green-600 p-2 rounded-md"
+  }
+>
+  Logout
+</NavLink>
+
+      </div>
+      )
+    }
+    else{
+      return (
+        <>
+        <div className="flex flex-row gap-5 justify-center items-center">
+         <div>
+         <CustomNavLink
+  to="/signin"
+  className="text-gray-600 hover:text-green-600"
+>
+  Sign In
+</CustomNavLink>
+         </div>
+        <div>
+       <button className="bg-lime-400 text-blue-800 font-bold py-2 px-6 rounded-full hover:bg-lime-300">
+           Get Started
+         </button>
+       </div>
+</div>
+       </>
+      )
+    }
+  }
   return (
     <nav className="bg-white shadow-md py-4 px-8 flex justify-between items-center">
       {/* Logo */}
@@ -62,60 +105,52 @@ const Navbar = () => {
         } md:flex flex-col md:flex-row absolute md:relative top-16 md:top-auto left-0 md:left-auto w-full md:w-auto bg-white md:bg-transparent text-gray-600 space-y-4 md:space-y-0 items-center justify-around sm:gap-1 md:gap-2 lg:gap-8 p-4 md:p-0`}
       >
         <li>
-          <Link to="/" className="hover:text-green-600 block">
+          <CustomNavLink to="/" className="hover:text-green-600 block">
             Home
-          </Link>
+          </CustomNavLink>
         </li>
         <li>
-          <Link to="/about" className="hover:text-green-600 block">
+          <CustomNavLink to="/about" className="hover:text-green-600 block">
             About
-          </Link>
+          </CustomNavLink>
         </li>
         <li>
-          <Link to="/platform" className="hover:text-green-600 block">
+          <CustomNavLink to="/platform" className="hover:text-green-600 block">
             Platform
-          </Link>
+          </CustomNavLink>
         </li>
         <li>
-          <Link to="/pricing" className="hover:text-green-600 block">
+          <CustomNavLink to="/pricing" className="hover:text-green-600 block">
             Pricing
-          </Link>
+          </CustomNavLink>
         </li>
         <li>
-          <Link to="/JDcreation" className="hover:text-green-600 block">
+          <CustomNavLink to="/JDcreation" className="hover:text-green-600 block">
             JDcreation
-          </Link>
+          </CustomNavLink>
         </li>
         <li>
-          <Link to="/contact" className="hover:text-green-600 block">
+          <CustomNavLink to="/contact" className="hover:text-green-600 block">
             Contact
-          </Link>
+          </CustomNavLink>
         </li>
 
       </ul>
-<div className="flex flex-row gap-5 justify-center items-center">
-{isLoggedIn ? (
-          <div>
-            <button
-              onClick={handleLogout}
-              className="text-red-600 hover:text-red-800 font-medium"
-            >
-              Logout
-            </button>
-          </div>
-        ) : (
+
+      <RenderMenu/>
+{/* <div className="flex flex-row gap-5 justify-center items-center">
           <div>
             <Link to="/signin" className="text-gray-600 hover:text-green-600">
               Sign In
             </Link>
           </div>
-        )}
-        <div>
+=        <div>
         <button className="bg-lime-400 text-blue-800 font-bold py-2 px-6 rounded-full hover:bg-lime-300">
             Get Started
           </button>
         </div>
-</div>
+</div> */}
+
       {/* Desktop Buttons */}
       {/* <div className="hidden md:flex space-x-4">
       {isLoggedIn ? (

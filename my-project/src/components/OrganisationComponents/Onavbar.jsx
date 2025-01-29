@@ -43,10 +43,12 @@ const Onavbar = () => {
           </span>
         </li>
         <li className="text-gray-300 flex items-center mb-4 cursor-pointer hover:bg-blue-700 rounded-md p-2">
-          <span className="material-icons">📄</span>
+        <Link to="/alljobs" className="flex items-center w-full">
+        <span className="material-icons">📄</span>
           <span className={`${isOpen ? "ml-4" : "hidden"} text-sm`}>
             All Jobs
           </span>
+        </Link>
         </li>
         <li className="text-gray-300 flex items-center mb-4 cursor-pointer hover:bg-blue-700 rounded-md p-2">
           <span className="material-icons">⏰</span>

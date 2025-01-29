@@ -11,11 +11,22 @@ import SignIn from "./components/SignIn";
 import OrganisationSignup from "./components/OrganisationSignup";
 import Jobpost from "./components/OrganisationComponents/Jobpost";
 import Aiquestion from "./components/OrganisationComponents/Aiquestion";
-import PreviewAndPublish from "./components/OrganisationComponents/Preview&Publish";
-import ProtectedRoute from "./components/OrganisationComponents/ProtectedRoute";
+// import PreviewAndPublish from "./components/OrganisationComponents/PreviewAndPublish";
+import { createContext, useReducer } from "react";
+// Import reducer, initialState, and init function
+import { reducer, initialState } from "../src/Reducer/UserRecducer";
+import Protectedroute from "./components/Protectedroute.jsx";
+import PreviewAndPublish from "./components/OrganisationComponents/Preview&Publish.jsx";
+import Alljobs from "./components/OrganisationComponents/Alljobs.jsx";
+
+// Context API
+export const UserContext = createContext();
+
 const App = () => {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
   return (
-    <>
+    <UserContext.Provider value={{ state, dispatch }}>
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -23,25 +34,22 @@ const App = () => {
         <Route path="/platform" element={<Platform />} />
         <Route path="/pricing" element={<Pricing />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/SignIn" element={<SignIn/>} />
-        <Route path="/Popuppreplace" element={<Popuppreplace/>} />
-        <Route path="/OrganisationSignup" element={<OrganisationSignup/>} />
-        <Route path="/Jobpost" element={<Jobpost/>} />
-        <Route path="/Aiquestion" element={<Aiquestion/>} />
-        <Route path="/Preview&Publish" element={<PreviewAndPublish/>} />
-
-        {/* <Route path="/JDcreation" element={<JDcreation />} /> */}
-        <Route
-          path="/JDcreation"
-          element={
-            <ProtectedRoute>
-              <JDcreation />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/signin" element={<SignIn />} />
+        <Route path="/popuppreplace" element={<Popuppreplace />} />
+        <Route path="/organisationsignup" element={<OrganisationSignup />} />
         
+
+        {/* protected routes  */}
+        <Route element={<Protectedroute/>}>
+        <Route path="/jdcreation" element={<JDcreation />} />
+        <Route path="/jobpost" element={<Jobpost />} />
+        <Route path="/aiquestion" element={<Aiquestion />} />
+        <Route path="/preview-and-publish" element={<PreviewAndPublish/>} />
+        <Route path="/alljobs" element={<Alljobs/>} />
+
+        </Route>
       </Routes>
-    </>
+    </UserContext.Provider>
   );
 };
 

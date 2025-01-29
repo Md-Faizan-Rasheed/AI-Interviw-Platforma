@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react';
 import Onavbar from './Onavbar';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { createJob } from './service/Api';
 
 const PreviewAndPublish = () => {
   const [loggedInUser, setLoggedInUser] = useState('');
+  const [job, setJob] = useState({ title: '', description: '', status: 'Draft' });
+const [status,setStatus] = useState(0);
     const navigate = useNavigate();
     const location = useLocation();
     const dataforAi = location.state?.dataforAi;
@@ -11,6 +14,7 @@ const PreviewAndPublish = () => {
 
     const parsedData = dataforAi ? JSON.parse(dataforAi) : {};
     
+    const { jobData, formattedQuestions } = location.state || {};
 
     useEffect(() => {
       var user = localStorage.getItem('loggedInUser');
@@ -23,11 +27,141 @@ const PreviewAndPublish = () => {
 console.log("Data on Preview and Publish",parsedData);
 // console.log("Data on Preview and Publish qeustions",dataforquestion);
     const handlenavigateAi = ()=>{
-        navigate('/Aiquestion');
+        navigate('/Aiquestion',  {
+          state: { jobData, dataforAi, formattedQuestions },
+      });
     }
+    
     const navigateinforamation = ()=>{
-        navigate('/Jobpost');
+        navigate('/Jobpost',{ state: { jobData } });
     }
+
+    // const handleSubmit = async (e) => {
+    //   e.preventDefault();
+      
+    //   // Extract the job description
+    //   const htmlJobDescription = parsedData.jobDescription || '';
+      
+    //   // Convert HTML to plain text
+    //   const parser = new DOMParser();
+    //   const doc = parser.parseFromString(htmlJobDescription, 'text/html');
+    //   const plainTextJobDescription = doc.body.textContent || '';
+    
+    //   console.log("Plain Text Job Description:", plainTextJobDescription);
+    
+    //   // Log the rest of the job data if needed
+    //   console.log("Job Data:", jobData);
+    //   addJob();
+    //   navigate('/alljobs', { 
+    //     state: { 
+    //       plainTextJobDescription: plainTextJobDescription, 
+    //         jobTitle: parsedData.jobTitle ,
+    //         status:'published',
+    //         createdAt:new Date().toISOString(),
+    //         jobId: `${Date.now()}-${Math.floor(Math.random() * 1000000)}`
+    //     } 
+    // });
+    
+
+    // };
+    
+
+  //   const addJob = async (jobData) => {
+  //     const token = localStorage.getItem('authToken'); // Get the JWT token from local storage
+  
+  //     try {
+  //         const response = await fetch('http://localhost:5000/api/jobs/add', {
+  //             method: 'POST',
+  //             headers: {
+  //                 'Content-Type': 'application/json',
+  //                 Authorization: `Bearer ${token}`,
+  //             },
+  //             body: JSON.stringify(jobData),
+  //         });
+  
+  //         // Check if the response is OK (status code 200-299)
+  //         if (!response.ok) {
+  //             const errorText = await response.text(); // Get the response as text
+  //             console.error('Error adding job:', errorText);
+  //             alert('Failed to add job: ' + errorText);
+  //             return;
+  //         }
+  
+  //         // Try to parse the JSON response, if it exists
+  //         const data = await response.json().catch((err) => {
+  //             console.error('Error parsing JSON:', err);
+  //             return {}; // Return an empty object if JSON parsing fails
+  //         });
+  
+  //         // Handle the response data
+  //         if (data.message) {
+  //             alert(data.message); // Job successfully added
+  //         } else {
+  //             alert('Unexpected server response');
+  //         }
+  //     } catch (error) {
+  //         console.error('Error adding job:', error);
+  //         alert('Error adding job. Please try again later.');
+  //     }
+  // };
+  
+  
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const htmlJobDescription = parsedData.jobDescription || '';
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlJobDescription, 'text/html');
+    const plainTextJobDescription = doc.body.textContent || '';
+
+    console.log("Plain Text Job Description:", plainTextJobDescription);
+
+    const jobData = {
+        jobTitle: parsedData.jobTitle,
+        status: 'Published',
+        plainTextJobDescription,
+        createdAt: new Date().toISOString(),
+        jobId: `${Date.now()}-${Math.floor(Math.random() * 1000000)}`,
+    };
+
+    await addJob(jobData);
+
+    navigate('/alljobs', { state: jobData });
+};
+
+const addJob = async (jobData) => {
+    const token = localStorage.getItem('authToken');
+
+    try {
+        const response = await fetch('http://localhost:5000/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(jobData),
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Error adding job:', errorText);
+            alert('Failed to add job: ' + errorText);
+            return;
+        }
+
+        const data = await response.json();
+        if (data.message) {
+            alert(data.message);
+        } else {
+            alert('Unexpected server response');
+        }
+    } catch (error) {
+        console.error('Error adding job:', error);
+        alert('Error adding job. Please try again later.');
+    }
+};
+
   return (
 <div className="flex flex-col md:flex-row h-screen bg-gray-100">
 
@@ -177,7 +311,9 @@ onClick={navigateinforamation}
     <button className="invisible">Hidden Element</button>
     <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
       <div className="flex gap-2">
-        <button className="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600">
+        <button className="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600"
+        onClick={handleSubmit}
+        >
           Save Job
         </button>
         <button className="px-4 py-2 text-sm font-medium text-white bg-green-500 rounded-lg hover:bg-green-600">
