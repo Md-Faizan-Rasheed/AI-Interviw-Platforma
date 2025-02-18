@@ -3,25 +3,33 @@ import  { useContext, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import {UserContext} from "../App"
 import CustomNavLink from './CustomNavLink';
+import { AuthContext } from "./Context/AuthContext";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   // const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
   const navigate = useNavigate();
+  const { isLoggedIn, login, logout} = useContext(AuthContext);
+  
   // const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
-const {state,dispatch} = useContext(UserContext)
+// const {state,dispatch} = useContext(UserContext)
   // Handle logout
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("loggedInUser");
+    localStorage.removeItem("aiQuestions");
+    localStorage.removeItem("email");
+    localStorage.removeItem("jobPostData");
+    localStorage.removeItem("jobs");
     // setIsLoggedIn(false);
-    dispatch({type:"USER",payload:false})
-
+    // dispatch({type:"USER",payload:false})
+    // const { dispatch } = useContext(UserContext);
+    logout()
     navigate("/SignIn"); // Redirect to the home page
   };
 
   const RenderMenu = () =>{
-    if(state){
+    if(isLoggedIn){
       return(
         <div>
        <NavLink

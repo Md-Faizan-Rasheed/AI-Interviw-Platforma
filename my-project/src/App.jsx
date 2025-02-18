@@ -3,7 +3,7 @@ import Navbar from "./components/Navbar";
 import Home from "./components/Home";
 import About from "./components/About";
 import Platform from "./components/Platform";
-import JDcreation from "./components/OrganisationComponents/JDcreation";
+import JDcreation from "./components/OrganisationComponents/Dashboard.jsx";
 import Pricing from "./components/Pricing";
 import Contact from "./components/Contact";
 import Popuppreplace from "./components/Popuppreplace";
@@ -18,7 +18,12 @@ import { reducer, initialState } from "../src/Reducer/UserRecducer";
 import Protectedroute from "./components/Protectedroute.jsx";
 import PreviewAndPublish from "./components/OrganisationComponents/Preview&Publish.jsx";
 import Alljobs from "./components/OrganisationComponents/Alljobs.jsx";
-
+import JobDetails from "./components/OrganisationComponents/JobDetails.jsx";
+import Dashboard from "./components/OrganisationComponents/Dashboard.jsx";
+import Settings from "./components/OrganisationComponents/Setting.jsx";
+import ResetPasswordPage from "./components/OrganisationComponents/ResetPasswordPage.jsx";
+// import { Settings } from "lucide-react";
+import { AuthProvider } from "./components/Context/AuthContext.jsx";
 // Context API
 export const UserContext = createContext();
 
@@ -26,7 +31,8 @@ const App = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   return (
-    <UserContext.Provider value={{ state, dispatch }}>
+    <AuthProvider>
+      <UserContext.Provider value={{ state, dispatch }}>
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -37,19 +43,24 @@ const App = () => {
         <Route path="/signin" element={<SignIn />} />
         <Route path="/popuppreplace" element={<Popuppreplace />} />
         <Route path="/organisationsignup" element={<OrganisationSignup />} />
-        
-
+        <Route path="/jobs/:id" element={<JobDetails/>} />
+        <Route path="/reset-password/:resetToken" element={<ResetPasswordPage/>} />
+      
+  
         {/* protected routes  */}
         <Route element={<Protectedroute/>}>
-        <Route path="/jdcreation" element={<JDcreation />} />
+        <Route path="/dashboard" element={<Dashboard/>} />
         <Route path="/jobpost" element={<Jobpost />} />
         <Route path="/aiquestion" element={<Aiquestion />} />
         <Route path="/preview-and-publish" element={<PreviewAndPublish/>} />
         <Route path="/alljobs" element={<Alljobs/>} />
+        <Route path="/JDcreation" element={<JDcreation/>} />
+        <Route path="/setting" element={<Settings/>} />
 
-        </Route>
+      </Route>
       </Routes>
     </UserContext.Provider>
+    </AuthProvider>
   );
 };
 

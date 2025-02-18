@@ -1,45 +1,81 @@
-// import React from 'react'
-import Onavbar from './Onavbar'
 import  { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { AI_PROMPTSEC } from './constants/options';
 import { chatSessionsecond } from "./service/Aimodel";
 import { FaTimes } from 'react-icons/fa';
+import Onavbar from './Onavbar';
 
 const Jobpost = () => {
   const navigate = useNavigate();
-
+  const loadInitialState = () => {
+    const savedData = localStorage.getItem('jobPostData');
+    if (savedData) {
+      return JSON.parse(savedData);
+    }
+    return null;
+  };
+  
+  const initialState = loadInitialState();
 
   const handleContentChange = (e) => {
     setJobDescription(e.target.innerHTML);
   };
+
+  
 // State for input field
-const [jobTitle, setJobTitle] = useState('');
-const [category, setCategory] = useState('');
-const [subcategory, setSubcategory] = useState('');
-  const [locationType, setLocationType] = useState('');
-  const [city, setCity] = useState('');
-  const [state, setState] = useState('');
-  const [country, setCountry] = useState('');
-  const [isJobInfoOpen, setJobInfoOpen] = useState(true);
-  const [isJobDescriptionOpen, setJobDescriptionOpen] = useState(true);
-  const [isAdditionalDetailsOpen, setAdditionalDetailsOpen] = useState(true);
-  const [displayOrganization, setDisplayOrganization] = useState(true);
-  const [isCompensaion, setCompensaion] = useState(true);
-  const [payRange, setPayRange] = useState({ min: '', max: '' });
-  const [jobDescription, setJobDescription] = useState('');
+// const [jobTitle, setJobTitle] = useState('');
+// const [category, setCategory] = useState('');
+// const [subcategory, setSubcategory] = useState('');
+//   const [locationType, setLocationType] = useState('');
+//   const [city, setCity] = useState('');
+//   const [state, setState] = useState('');
+//   const [country, setCountry] = useState('');
+//   const [isJobInfoOpen, setJobInfoOpen] = useState(true);
+//   const [isJobDescriptionOpen, setJobDescriptionOpen] = useState(true);
+//   const [isAdditionalDetailsOpen, setAdditionalDetailsOpen] = useState(true);
+//   const [displayOrganization, setDisplayOrganization] = useState(true);
+//   const [isCompensaion, setCompensaion] = useState(true);
+//   const [payRange, setPayRange] = useState({ min: '', max: '' });
+//   const [jobDescription, setJobDescription] = useState('');
 
 
-  const [selectedJobTypes, setSelectedJobTypes] = useState([]);
-  const [selectedExperienceLevel, setSelectedExperienceLevel] = useState(null);
-  const [selectedSchedules, setSelectedSchedules] = useState([]);
+//   const [selectedJobTypes, setSelectedJobTypes] = useState([]);
+//   const [selectedExperienceLevel, setSelectedExperienceLevel] = useState(null);
+//   const [selectedSchedules, setSelectedSchedules] = useState([]);
 
-  const jobTypes = ['Full Time', 'Part Time', 'Contract', 'Temporary', 'Internship', 'Volunteer', 'Freelance'];
-  const experienceLevels = ['No experience', 'Less than 1 year', '1-3 years', '3-5 years', '5-10 years', '10+ years'];
-  const [benefits, setBenefits] = useState(['sldkf', 'sldkf', 'New Benefit']);
-  const [showModal, setShowModal] = useState(false);
-  const [newBenefit, setNewBenefit] = useState('');
+//   const jobTypes = ['Full Time', 'Part Time', 'Contract', 'Temporary', 'Internship', 'Volunteer', 'Freelance'];
+//   const experienceLevels = ['No experience', 'Less than 1 year', '1-3 years', '3-5 years', '5-10 years', '10+ years'];
+//   const [benefits, setBenefits] = useState(['sldkf', 'sldkf', 'New Benefit']);
+//   const [showModal, setShowModal] = useState(false);
+//   const [newBenefit, setNewBenefit] = useState('');
+
+
+
+
+
+// State for input fields
+const [jobTitle, setJobTitle] = useState(initialState?.jobTitle || '');
+const [category, setCategory] = useState(initialState?.category || '');
+const [subcategory, setSubcategory] = useState(initialState?.subcategory || '');
+const [locationType, setLocationType] = useState(initialState?.locationType || '');
+const [city, setCity] = useState(initialState?.city || '');
+const [state, setState] = useState(initialState?.state || '');
+const [country, setCountry] = useState(initialState?.country || '');
+const [jobDescription, setJobDescription] = useState(initialState?.jobDescription || '');
+const [selectedJobTypes, setSelectedJobTypes] = useState(initialState?.selectedJobTypes || []);
+const [selectedExperienceLevel, setSelectedExperienceLevel] = useState(initialState?.selectedExperienceLevel || null);
+const [selectedSchedules, setSelectedSchedules] = useState(initialState?.selectedSchedules || []);
+const [payRange, setPayRange] = useState(initialState?.payRange || { min: '', max: '' });
+const [benefits, setBenefits] = useState(initialState?.benefits || []);
+const [isJobInfoOpen, setJobInfoOpen] = useState(true);
+const [isJobDescriptionOpen, setJobDescriptionOpen]=useState(true);
+const [isCompensaion, setCompensaion]=useState(true);
+const [showModal, setShowModal]=useState(false);
+const [newBenefit, setNewBenefit]=useState('');
+const [displayOrganization, setDisplayOrganization]=useState(true);
+const [isAdditionalDetailsOpen, setAdditionalDetailsOpen]=useState();
+
 
   // Function to add a new benefit
   const handleAddBenefit = () => {
@@ -49,6 +85,44 @@ const [subcategory, setSubcategory] = useState('');
       setShowModal(false);
     }
   };
+
+  useEffect(() => {
+    const dataToSave = {
+      jobTitle,
+      category,
+      subcategory,
+      locationType,
+      city,
+      state,
+      country,
+      jobDescription,
+      selectedJobTypes,
+      selectedExperienceLevel,
+      selectedSchedules,
+      payRange,
+      benefits,
+    };
+
+    localStorage.setItem("jobPostData", JSON.stringify(dataToSave));
+    console.log("DATa to save is shown here",dataToSave);
+  }, [
+    jobTitle,
+    category,
+    subcategory,
+    locationType,
+    city,
+    state,
+    country,
+    jobDescription,
+    selectedJobTypes,
+    selectedExperienceLevel,
+    selectedSchedules,
+    payRange,
+    benefits,
+  ]);
+
+
+
 
   // Function to remove a benefit
   const handleRemoveBenefit = (index) => {
@@ -281,7 +355,14 @@ const FINAL_PROMPT = AI_PROMPTSEC
       setError(true);
     }
   };
+  // const [seconds, setSeconds] = useState(0);
 
+    useEffect(() => {
+        // const interval = setInterval(() => 
+        //     setSeconds((s) => s + 1), 1000);
+        // return () => clearInterval(interval); 
+        console.log("console.logfor how many tiesm");
+    }, []);
 
   return (
     <div className="flex h-screen bg-gray-100">

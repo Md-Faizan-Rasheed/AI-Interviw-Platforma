@@ -48,14 +48,21 @@ const cors = require('cors');
 const AuthRouter = require('./Routes/AuthRouter.Routes');
 const ProductRouter = require('./Routes/ProductRouter');
 const JobRouter = require('./Routes/JobRoutes');
+const cookieParser = require('cookie-parser');
 
 require('dotenv').config();
 require('./Models/db');
 const PORT = process.env.PORT || 8080;
 
 app.use(bodyParser.json());
-app.use(cors());
-
+app.use(cookieParser());
+// app.use(cors());
+app.use(cors({
+    origin: "http://localhost:5173",  // Allows all domains
+    credentials: true, // ✅ Allow cookies
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"]
+}));
 // Ping route
 app.get('/ping', (req, res) => {
     res.send("Pong");

@@ -37,10 +37,12 @@ const Onavbar = () => {
       </Link>
         </li>
         <li className="text-gray-300 flex items-center mb-4 cursor-pointer hover:bg-blue-700 rounded-md p-2">
+        <Link to="/dashboard" className="flex items-center w-full">
           <span className="material-icons">🧊</span>
           <span className={`${isOpen ? "ml-4" : "hidden"} text-sm`}>
             Dashboard
           </span>
+        </Link>
         </li>
         <li className="text-gray-300 flex items-center mb-4 cursor-pointer hover:bg-blue-700 rounded-md p-2">
         <Link to="/alljobs" className="flex items-center w-full">
@@ -98,4 +100,4 @@ const Onavbar = () => {
 )
 }
 
-export default Onavbar
+export default Onavbar;

@@ -34,7 +34,20 @@ const UserSchema = new Schema({
         required:true,
         min:0 // Ensures the number is non-negative
 
-    }
+    },
+    interviewIntroVideo:{
+        type:String,
+    },
+    companyLocation:{
+        type:String,
+    },
+    city:{
+        type:String,
+    },
+    state:{
+        type:String,
+    },
+
 }, { timestamps: true }); // Adds createdAt and updatedAt timestamps automatically
 
 module.exports = mongoose.model('users', UserSchema);

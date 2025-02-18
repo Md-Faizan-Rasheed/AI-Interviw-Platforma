@@ -3,13 +3,6 @@ const mongoose = require('mongoose');
 // MongoDB connection URL
 const mongo_url = process.env.MONGO_URL; // Corrected typo: 'monog_url' -> 'mongo_url'
 
-// Connection options
-// const options = {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-// };
-
-// Establish the connection
 mongoose.connect(mongo_url)
     .then(() => {
         console.log('Connected to MongoDB');

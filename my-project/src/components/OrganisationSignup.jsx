@@ -54,7 +54,7 @@ const navigate = useNavigate();
       if(sucess){
         // handleSucess(message);
         setTimeout(() =>{
-          navigate("/SignIn");
+          navigate("/signin");
         },1000)
       }else if(error){
         const details = error?.details[0].message
