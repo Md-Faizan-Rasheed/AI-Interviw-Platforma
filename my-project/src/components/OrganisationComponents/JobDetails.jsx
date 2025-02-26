@@ -1,16 +1,21 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
 const JobDetails = () => {
+  const navigate = useNavigate();
   const { id } = useParams(); // Get Job ID from URL
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const saveandnext =()=>{
+    navigate('/studentinfo');
+  }
   useEffect(() => {
     const fetchJobDetails = async () => {
       try {
         const response = await axios.get(`http://localhost:8080/jobs/${id}`);
+        // const response = await axios.get(`http://localhost:8080/interview/${id}`);
         setJob(response.data);
       } catch (error) {
         console.error("Error fetching job details:", error);
@@ -46,14 +51,12 @@ const JobDetails = () => {
         <p className="text-gray-600 mt-4">No job description available.</p>
       )}
 
-      {/* Job Details (Uncomment if needed) */}
-      {/* <p className="text-gray-700 mt-2"><strong>Location:</strong> {job.location}</p> */}
-      {/* <p className="text-gray-700 mt-2"><strong>Salary:</strong> {job.salary}</p> */}
+    
 
       {/* Start Interview Button */}
       <button
-        onClick={() => alert("Starting interview...")} // Add actual functionality
-        className="mt-6 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
+            onClick={saveandnext}
+            className="mt-6 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
       >
         Start Interview
       </button>

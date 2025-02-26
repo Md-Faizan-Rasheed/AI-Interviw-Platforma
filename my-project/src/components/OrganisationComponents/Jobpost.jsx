@@ -22,38 +22,6 @@ const Jobpost = () => {
     setJobDescription(e.target.innerHTML);
   };
 
-  
-// State for input field
-// const [jobTitle, setJobTitle] = useState('');
-// const [category, setCategory] = useState('');
-// const [subcategory, setSubcategory] = useState('');
-//   const [locationType, setLocationType] = useState('');
-//   const [city, setCity] = useState('');
-//   const [state, setState] = useState('');
-//   const [country, setCountry] = useState('');
-//   const [isJobInfoOpen, setJobInfoOpen] = useState(true);
-//   const [isJobDescriptionOpen, setJobDescriptionOpen] = useState(true);
-//   const [isAdditionalDetailsOpen, setAdditionalDetailsOpen] = useState(true);
-//   const [displayOrganization, setDisplayOrganization] = useState(true);
-//   const [isCompensaion, setCompensaion] = useState(true);
-//   const [payRange, setPayRange] = useState({ min: '', max: '' });
-//   const [jobDescription, setJobDescription] = useState('');
-
-
-//   const [selectedJobTypes, setSelectedJobTypes] = useState([]);
-//   const [selectedExperienceLevel, setSelectedExperienceLevel] = useState(null);
-//   const [selectedSchedules, setSelectedSchedules] = useState([]);
-
-//   const jobTypes = ['Full Time', 'Part Time', 'Contract', 'Temporary', 'Internship', 'Volunteer', 'Freelance'];
-//   const experienceLevels = ['No experience', 'Less than 1 year', '1-3 years', '3-5 years', '5-10 years', '10+ years'];
-//   const [benefits, setBenefits] = useState(['sldkf', 'sldkf', 'New Benefit']);
-//   const [showModal, setShowModal] = useState(false);
-//   const [newBenefit, setNewBenefit] = useState('');
-
-
-
-
-
 // State for input fields
 const [jobTitle, setJobTitle] = useState(initialState?.jobTitle || '');
 const [category, setCategory] = useState(initialState?.category || '');
@@ -149,9 +117,9 @@ const [isAdditionalDetailsOpen, setAdditionalDetailsOpen]=useState();
   const [loggedInUser, setLoggedInUser] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const addBenefit = () => {
-    setBenefits([...benefits, "New Benefit"]);
-  };
+  // const addBenefit = () => {
+  //   setBenefits([...benefits, "New Benefit"]);
+  // };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -205,12 +173,12 @@ console.log(jobData);
 
   const [error, setError] = useState(false);
 
-  const handleDescriptionChange = (e) => {
-    setJobDescription(e.target.value);
-    if (e.target.value.trim()) {
-      setError(false);
-    }
-  };
+  // const handleDescriptionChange = (e) => {
+  //   setJobDescription(e.target.value);
+  //   if (e.target.value.trim()) {
+  //     setError(false);
+  //   }
+  // };
 
   useEffect(() => {
   var user = localStorage.getItem('loggedInUser');
@@ -244,18 +212,7 @@ const FINAL_PROMPT = AI_PROMPTSEC
         console.log("Parsed Data:", jobDescriptionData);
       const formattedDescriptionJSX = (
         <div style={{ fontFamily: "Arial, sans-serif", lineHeight: "1.6" }}>
-          {/* Job Title */}
-          {/* <p>
-            <strong style={{ fontSize: "20px", display: "block", marginBottom: "10px" }}>Job Title:</strong>
-            {jobDescriptionData.job_title || "N/A"}
-          </p> */}
-      
-          {/* Company Name */}
-          {/* <p>
-            <strong style={{ fontSize: "20px", display: "block", marginBottom: "10px" }}>Company Name:</strong>
-            {jobDescriptionData.company_name || "N/A"}
-          </p> */}
-      
+          
           {/* About the Company */}
           <p>
             {/* <strong style={{ fontSize: "20px", display: "block", marginBottom: "10px" }}>About the Company:</strong> */}
@@ -265,9 +222,7 @@ const FINAL_PROMPT = AI_PROMPTSEC
           </p>
       
           {/* Job Description */}
-          <p>
-            {/* <strong style={{ fontSize: "20px", display: "block", marginBottom: "10px" }}>Job Description:</strong> */}
-          </p>
+
       
           {/* Responsibilities */}
           <p>
@@ -317,21 +272,6 @@ const FINAL_PROMPT = AI_PROMPTSEC
             </ul>
           </p>
       
-          {/* How to Apply */}
-          {/* <p>
-            <strong style={{ fontSize: "20px", display: "block", marginBottom: "10px" }}>How to Apply:</strong>
-            <span style={{ marginLeft: "20px", display: "block" }}>
-              {jobDescriptionData.how_to_apply || "No application instructions provided"}
-            </span>
-          </p> */}
-      
-          {/* Equal Opportunity Statement */}
-          {/* <p>
-            <strong style={{ fontSize: "20px", display: "block", marginBottom: "10px" }}>Equal Opportunity Statement:</strong>
-            <span style={{ marginLeft: "20px", display: "block" }}>
-              {jobDescriptionData.equal_opportunity_statement || "No equal opportunity statement provided."}
-            </span>
-          </p> */}
         </div>
       );
 
@@ -355,31 +295,23 @@ const FINAL_PROMPT = AI_PROMPTSEC
       setError(true);
     }
   };
-  // const [seconds, setSeconds] = useState(0);
-
-    useEffect(() => {
-        // const interval = setInterval(() => 
-        //     setSeconds((s) => s + 1), 1000);
-        // return () => clearInterval(interval); 
-        console.log("console.logfor how many tiesm");
-    }, []);
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen  bg-gradient-to-br from-[#a8edea] to-[#fed6e3] font-abel">
       <Onavbar/>
       
-      <div className="max-w-4xl mx-auto p-4">
+      <div className=" mx-auto p-4  bg-gradient-to-br from-[#a8edea] to-[#fed6e3] font-abel">
       {/* Job Information Section */}
-      <div className="border border-gray-300 rounded-lg mb-4">
+      <div className="border border-gray-300  bg-gradient-to-br from-[#a8edea] to-[#fed6e3] font-abel rounded-lg mb-4">
         <div
-          className="flex justify-between items-center p-4 bg-blue-500 text-white cursor-pointer"
+          className="flex justify-between items-center p-4 bg-blue-300 text-white cursor-pointer"
           onClick={() => setJobInfoOpen(!isJobInfoOpen)}
         >
           <h2 className="text-lg font-bold">Job Information</h2>
           <span>{isJobInfoOpen ? '▲' : '▼'}</span>
         </div>
         {isJobInfoOpen && (
-           <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-lg">
+           <div className=" mx-auto p-6  bg-gradient-to-br from-[#a8edea] to-[#fed6e3] font-abel shadow-md rounded-lg">
            {/* Job Title */}
            <div className="mb-6">
              <label className="block text-gray-700 font-medium mb-2" htmlFor="jobTitle">
@@ -537,7 +469,7 @@ const FINAL_PROMPT = AI_PROMPTSEC
       </div>
  )}
       {/* Job Description Section */}
-      <div className="border border-gray-300 rounded-lg mb-4">
+      <div className="border  bg-gradient-to-br from-[#a8edea] to-[#fed6e3] font-abel border-gray-300 rounded-lg mb-4">
         <div
           className="flex justify-between items-center p-4 bg-blue-500 text-white cursor-pointer"
           onClick={() => setJobDescriptionOpen(!isJobDescriptionOpen)}
@@ -546,7 +478,7 @@ const FINAL_PROMPT = AI_PROMPTSEC
           <span>{isJobDescriptionOpen ? '▲' : '▼'}</span>
         </div>
         {isJobDescriptionOpen && (
-          <div className=" w-full mx-auto p-6 border rounded-lg shadow-lg bg-white">
+          <div className=" w-full mx-auto p-6 border rounded-lg shadow-lg  bg-gradient-to-br from-[#a8edea] to-[#fed6e3] font-abel">
           <label className="block text-lg font-medium text-gray-700 mb-2">Job Description <span className="text-red-500">*</span></label>
           <p className="text-sm text-gray-500 mb-4">Craft a comprehensive description that highlights the unique features, benefits, and specifications of your open position.</p>
 
@@ -555,7 +487,7 @@ const FINAL_PROMPT = AI_PROMPTSEC
         onClick={handleGenerateDescription}
         disabled={isLoading}
         className={`${
-          isLoading ? "bg-blue-400" : "bg-blue-500 hover:bg-blue-600"
+          isLoading ? "bg-blue-400" : "bg-blue-500 hover:bg-blue-400"
         } text-white px-6 py-2 rounded-lg`}
       >
         {isLoading ? (
@@ -580,7 +512,7 @@ const FINAL_PROMPT = AI_PROMPTSEC
                 d="M4 12a8 8 0 018-8v8H4zm2 5.292V13h4.708l1.292 1.292H6z"
               ></path>
             </svg>
-            Loading...
+            Generating Description....
           </div>
         ) : (
           "🖉 Generate Description"
@@ -609,80 +541,7 @@ const FINAL_PROMPT = AI_PROMPTSEC
         )}
       </div>
 
-      {/* Additional Details Section */}
-      <div className="border border-gray-300 rounded-lg">
-        <div
-          className="flex justify-between items-center p-4 bg-blue-500 text-white cursor-pointer"
-          onClick={() => setAdditionalDetailsOpen(!isAdditionalDetailsOpen)}
-        >
-          <h2 className="text-lg font-bold">Additional Details</h2>
-          <span>{isAdditionalDetailsOpen ? '▲' : '▼'}</span>
-        </div>
-        {isAdditionalDetailsOpen && (
-          <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-lg">
-          {/* Job Type */}
-          <div className="mb-6">
-            <label className="block text-gray-700 font-medium mb-2">Job Type</label>
-            <p className="text-sm text-gray-500 mb-4">
-              Add additional details for your job posting that are relevant to the candidate.
-            </p>
-            <div className="flex flex-wrap gap-4">
-              {jobTypes.map((type) => (
-                <button
-                  key={type}
-
-                  onClick={() => jobtoggleSelection(type)}
-          className={`px-4 py-2 border rounded-full ${
-            selectedJobTypes.includes(type)
-              ? 'bg-blue-500 text-white'
-              : 'border-gray-300 text-gray-700'
-          } hover:border-blue-500 hover:text-blue-500`}
-        >
-                  {type}
-                </button>
-              ))}
-            </div>
-          </div>
-    
-          {/* Experience Level */}
-          <div className="mb-6">
-            <label className="block text-gray-700 font-medium mb-2">Experience Level</label>
-            <div className="flex flex-wrap gap-4">
-              {experienceLevels.map((level) => (
-                <button
-                  key={level}
-                  onClick={() => setSelectedExperienceLevel(level)}
-                  className={`px-4 py-2 border rounded-full ${
-                    selectedExperienceLevel === level ? 'bg-blue-500 text-white' : 'border-gray-300 text-gray-700'
-                  } hover:border-blue-500 hover:text-blue-500`}
-                >
-                  {level}
-                </button>
-              ))}
-            </div>
-          </div>
-    
-          {/* Schedule */}
-          <div className="mb-6">
-            <label className="block text-gray-700 font-medium mb-2">Schedule</label>
-            <div className="flex flex-wrap gap-4">
-              {schedules.map((schedule) => (
-                <button
-                  key={schedule}
-                  onClick={() => toggleSelection(schedule, selectedSchedules, setSelectedSchedules)}
-                  className={`px-4 py-2 border rounded-full ${
-                    selectedSchedules.includes(schedule) ? 'bg-blue-500 text-white' : 'border-gray-300 text-gray-700'
-                  } hover:border-blue-500 hover:text-blue-500`}
-                >
-                  {schedule}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-        )}
-      </div>
-
+      
       {/* Compensation Section */}
       <div className="border border-gray-300 rounded-lg">
         <div
@@ -693,7 +552,7 @@ const FINAL_PROMPT = AI_PROMPTSEC
           <span>{isCompensaion ? '▲' : '▼'}</span>
         </div>
         {isCompensaion && (
-          <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-lg">
+          <div className="max-w-4xl mx-auto p-6  bg-gradient-to-br from-[#a8edea] to-[#fed6e3] font-abel shadow-md rounded-lg">
           <h2 className="text-lg font-semibold mb-4">Compensation</h2>
           
           {/* Display Compensation Toggle */}

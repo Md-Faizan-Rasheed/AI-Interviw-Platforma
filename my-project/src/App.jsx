@@ -24,6 +24,8 @@ import Settings from "./components/OrganisationComponents/Setting.jsx";
 import ResetPasswordPage from "./components/OrganisationComponents/ResetPasswordPage.jsx";
 // import { Settings } from "lucide-react";
 import { AuthProvider } from "./components/Context/AuthContext.jsx";
+import LoginForm from "./components/Login.jsx";
+import StudentInfo from "./components/OrganisationComponents/StudentInfo.jsx";
 // Context API
 export const UserContext = createContext();
 
@@ -45,7 +47,8 @@ const App = () => {
         <Route path="/organisationsignup" element={<OrganisationSignup />} />
         <Route path="/jobs/:id" element={<JobDetails/>} />
         <Route path="/reset-password/:resetToken" element={<ResetPasswordPage/>} />
-      
+        <Route path="/login" element={<LoginForm/>} />
+        <Route path="/studentinfo" element={<StudentInfo/>}/>
   
         {/* protected routes  */}
         <Route element={<Protectedroute/>}>

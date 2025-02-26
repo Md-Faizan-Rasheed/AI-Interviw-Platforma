@@ -10,7 +10,7 @@ const Onavbar = () => {
     <div
     className={`${
       isOpen ? "w-64" : "w-16"
-    } bg-blue-900 h-screen p-4 flex flex-col transition-all duration-300`}
+    }  bg-gradient-to-br from-[#8268df] to-[#2a404a] font-abel h-screen p-4 flex flex-col transition-all duration-300`}
   >
     {/* Sidebar Header */}
     <div className="flex items-center justify-between">

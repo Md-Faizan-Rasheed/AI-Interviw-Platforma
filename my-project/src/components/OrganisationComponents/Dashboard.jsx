@@ -55,11 +55,11 @@ const Dashboard = () => {
     }
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen  bg-gradient-to-br from-[#a8edea] to-[#fed6e3] font-abel">
       {/* Sidebar */}
      <Onavbar/>
       {/* Main Content */}
-      <div className="bg-blue-50 min-h-screen p-8">
+      <div className=" bg-gradient-to-br from-[#a8edea] to-[#fed6e3] font-abel min-h-screen p-8">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-blue-900">Home</h1>

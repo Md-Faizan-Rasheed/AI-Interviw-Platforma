@@ -9,7 +9,10 @@ const User = require('../Models/User.Models'); // ✅ Import User model
 const jwt = require('jsonwebtoken');
 const nodemailer = require("nodemailer");
 const bcrypt = require('bcrypt');
+const twilio = require("twilio");
 
+
+// const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_ACCOUNT_TOKEN);
 
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 
@@ -58,36 +61,36 @@ router.post('/add',async (req, res) => {
 
 
 // Generate a unique link for a job
-router.post(
-    '/api/jobs/generate-link',
-    ensureAuthenticated,
-    [body('jobDescription').notEmpty().withMessage('Job description is required')],
-    validateRequest,
-    async (req, res) => {
-        const { jobDescription } = req.body;
-        const userId = req.userId;
+// router.post(
+//     '/api/jobs/generate-link',
+//     ensureAuthenticated,
+//     [body('jobDescription').notEmpty().withMessage('Job description is required')],
+//     validateRequest,
+//     async (req, res) => {
+//         const { jobDescription } = req.body;
+//         const userId = req.userId;
 
-        try {
-            const uniqueId = uuidv4();
-            const newJob = new Job({
-                jobTitle: `Generated Job - ${uniqueId}`,
-                status: 'Active',
-                plainTextJobDescription: jobDescription,
-                userId,
-            });
+//         try {
+//             const uniqueId = uuidv4();
+//             const newJob = new Job({
+//                 jobTitle: `Generated Job - ${uniqueId}`,
+//                 status: 'Active',
+//                 plainTextJobDescription: jobDescription,
+//                 userId,
+//             });
 
-            await newJob.save();
-            res.status(201).json({
-                message: 'Job link generated successfully!',
-                link: `${FRONTEND_URL}/jobs/${uniqueId}`,
-                job: newJob,
-            });
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({ error: error.message || 'Error generating job link' });
-        }
-    }
-);
+//             await newJob.save();
+//             res.status(201).json({
+//                 message: 'Job link generated successfully!',
+//                 link: `${FRONTEND_URL}/interview/${uniqueId}`,
+//                 job: newJob,
+//             });
+//         } catch (error) {
+//             console.error(error);
+//             res.status(500).json({ error: error.message || 'Error generating job link' });
+//         }
+//     }
+// );
 
 
 // Get all jobs for a logged-in user
@@ -341,50 +344,8 @@ router.post("/api/update-password", async (req, res) => {
     }
   });
 
-//   for Preserving after Refresh 
-// router.get('/refresh-token', (req, res) => {
-//     const token = req.cookies.token;
-//     console.log("Headers:", req.headers);
-//     console.log("Cookies received:", req.cookies); // Debugging line
-//     if (!token) return res.status(401).json({ message: "Not authenticated" });
 
-//     jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-//         if (err) return res.status(403).json({ message: "Token expired" });
 
-//         const newToken = jwt.sign({ id: user.id, username: user.username }, process.env.JWT_SECRET, { expiresIn: '1h' });
-//         res.cookie("token", newToken, {
-//             httpOnly: true,
-//             secure: true,
-//             sameSite: "Strict",
-//         });
-
-//         res.json({ message: "Token refreshed", user });
-//     });
-// });
-
-// router.get('/refresh-token', (req, res) => {
-//     const token = req.cookies.token; // Ensure cookies are sent properly
-//     console.log("Headers:", req.headers);
-//     console.log("Cookies received at bd:", req.cookies);
-
-//     if (!token) return res.status(401).json({ message: "Not authenticated" });
-
-//     jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-//         if (err) return res.status(403).json({ message: "Token expired" });
-
-//         const newToken = jwt.sign({ id: decoded.id, username: decoded.username }, process.env.JWT_SECRET, { expiresIn: '1h' });
-
-//         res.cookie("token", newToken, {
-//             httpOnly: true,
-//             secure: process.env.NODE_ENV === "production", // Use secure cookies in production
-//             sameSite: "Strict",
-//         });
-
-//         res.json({ message: "Token refreshed", user: { id: decoded.id, username: decoded.username } });
-//     });
-// });
-
-// Fetch job details by ID
 router.get('/:id', async (req, res) => {
     try {
         const job = await Job.findById(req.params.id); // Find job by ID
@@ -397,4 +358,68 @@ router.get('/:id', async (req, res) => {
     }
 });
 
+
+
+
+
+const accountSid = 'AC131d44ff22ec6e54f5f1e9736c3a5b15';
+const authToken = '4dbf54206e0f375140a5ab4b6ea03926';
+const client = twilio(accountSid, authToken);
+//  Otp seding 
+router.post("/send-otp", async (req, res) => {
+    const { phoneNumber } = req.body;
+
+    if (!phoneNumber) {
+        return res.status(400).json({ error: "Phone number is required" });
+    }
+
+    try {
+        console.log("Sending OTP to:", phoneNumber);
+        let formattedPhone = phoneNumber.trim();
+        if (!formattedPhone.startsWith("+91")) {
+            formattedPhone = `+91${formattedPhone.replace(/^0+/, "")}`; // Ensure correct format
+        }
+
+        const response = await client.verify.v2
+            .services("VAb537a6d4151423d68bc44f62cde29b21")
+            .verifications.create({ to: formattedPhone, channel: "sms" });
+            console.log("Response",response);
+        res.json({ success: true, message: "OTP sent successfully", response });
+    } catch (error) {
+        console.error("Error sending OTP:", error);
+        res.status(500).json({ error: error.message || "Internal Server Error" });
+    }
+});
+  
+// Otp Verification
+  router.post("/verify-otp", async (req, res) => {
+    const { phoneNumber, otp } = req.body;
+  
+    try {
+        let formattedPhone = phoneNumber.trim();
+        if (!formattedPhone.startsWith("+91")) {
+            formattedPhone = `+91${formattedPhone.replace(/^0+/, "")}`;
+        }
+
+        const response = await client.verify.v2
+            .services("VAb537a6d4151423d68bc44f62cde29b21") // Replace with your actual Verify Service SID
+            .verificationChecks.create({
+                to: formattedPhone,
+                code: otp,
+            });
+            console.log("Response for verification",response);
+
+        if (response.status === "approved") {
+            return res.json({ success: true, message: "OTP verified successfully" });
+        } else {
+            return res.status(400).json({ success: false, error: "Invalid OTP" });
+        }
+    } catch (error) {
+        console.error("Error verifying OTP:", error);
+        res.status(500).json({ error: error.message || "Internal Server Error" });
+    }
+  });
+
+
+  
 module.exports = router;
