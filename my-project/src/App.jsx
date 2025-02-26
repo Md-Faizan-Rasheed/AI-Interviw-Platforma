@@ -26,6 +26,7 @@ import ResetPasswordPage from "./components/OrganisationComponents/ResetPassword
 import { AuthProvider } from "./components/Context/AuthContext.jsx";
 import LoginForm from "./components/Login.jsx";
 import StudentInfo from "./components/OrganisationComponents/StudentInfo.jsx";
+import InterviewPage from "./components/OrganisationComponents/InterviewPage.jsx";
 // Context API
 export const UserContext = createContext();
 
@@ -49,6 +50,7 @@ const App = () => {
         <Route path="/reset-password/:resetToken" element={<ResetPasswordPage/>} />
         <Route path="/login" element={<LoginForm/>} />
         <Route path="/studentinfo" element={<StudentInfo/>}/>
+        <Route path="/interview" element={<InterviewPage/>}/>
   
         {/* protected routes  */}
         <Route element={<Protectedroute/>}>

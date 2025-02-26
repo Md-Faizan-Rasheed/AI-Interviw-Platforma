@@ -10,6 +10,8 @@ const jwt = require('jsonwebtoken');
 const nodemailer = require("nodemailer");
 const bcrypt = require('bcrypt');
 const twilio = require("twilio");
+const { default: mongoose } = require('mongoose');
+const Student = require("../Models/Studentdetails.Model"); // Adjust path as needed
 
 
 // const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_ACCOUNT_TOKEN);
@@ -361,17 +363,45 @@ router.get('/:id', async (req, res) => {
 
 
 
+const  accountSid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
+const serviceid = process.env.TWILIO_SERVICE_ID
+// Import dotenv and configure it at the top of the file
+require('dotenv').config();
 
-const accountSid = 'AC131d44ff22ec6e54f5f1e9736c3a5b15';
-const authToken = '4dbf54206e0f375140a5ab4b6ea03926';
-const client = twilio(accountSid, authToken);
+// Now access environment variables
+// const accountSid = process.env.TWILIO_ACCOUNT_SID;
+// const authToken = process.env.TWILIO_AUTH_TOKEN; 
+// const serviceid = process.env.TWILIO_SERVICE_ID;
+
+// Verify environment variables are loaded
+if (!accountSid || !authToken || !serviceid) {
+    console.error('Missing required environment variables for Twilio:');
+    console.error('TWILIO_ACCOUNT_SID:', process.env.TWILIO_ACCOUNT_SID);
+    console.error('TWILIO_AUTH_TOKEN:', process.env.TWILIO_AUTH_TOKEN);
+    console.error('TWILIO_SERVICE_ID:', process.env.TWILIO_SERVICE_ID);
+    console.log("mongo uri",process.env.MONGO_URL);
+
+}
+
+// const accountSid = 'AC131d44ff22ec6e54f5f1e9736c3a5b15';
+// const authToken = '4dbf54206e0f375140a5ab4b6ea03926';
+// const client = twilio(accountSid, authToken);
+const client = twilio( process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 //  Otp seding 
 router.post("/send-otp", async (req, res) => {
     const { phoneNumber } = req.body;
-
+console.log("accountSid",accountSid);
+console.log("authToken",authToken);
+console.log("Service Id",serviceid);
     if (!phoneNumber) {
         return res.status(400).json({ error: "Phone number is required" });
     }
+
+    // const existingStudent = await Student.findOne({ phoneNumber });
+    // if (existingStudent) {
+    //   return res.json({ success: false, message: "This number is already registered for an interview." });
+    // }
 
     try {
         console.log("Sending OTP to:", phoneNumber);
@@ -381,7 +411,8 @@ router.post("/send-otp", async (req, res) => {
         }
 
         const response = await client.verify.v2
-            .services("VAb537a6d4151423d68bc44f62cde29b21")
+            // .services("VAb537a6d4151423d68bc44f62cde29b21")
+            .services(process.env.TWILIO_SERVICE_ID)
             .verifications.create({ to: formattedPhone, channel: "sms" });
             console.log("Response",response);
         res.json({ success: true, message: "OTP sent successfully", response });
@@ -421,5 +452,22 @@ router.post("/send-otp", async (req, res) => {
   });
 
 
+
+// Registration Route
+router.post("/save-student-details", async (req, res) => {
+    const { phoneNumber, studentName, adharNumber } = req.body;
+  
+    const existingStudent = await Student.findOne({ phoneNumber });
+    if (existingStudent) {
+      return res.json({ success: false, message: "This number is already registered for an interview." });
+    }
+  
+    const newStudent = new Student({ phoneNumber, studentName, adharNumber });
+    await newStudent.save();
+  
+    res.json({ success: true, message: "Student registered successfully!" });
+  });
+  
   
 module.exports = router;
+
