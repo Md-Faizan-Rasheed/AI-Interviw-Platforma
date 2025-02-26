@@ -7,7 +7,7 @@ const AuthRouter = require('./Routes/AuthRouter.Routes');
 const ProductRouter = require('./Routes/ProductRouter');
 const JobRouter = require('./Routes/JobRoutes');
 const cookieParser = require('cookie-parser');
-const admin = require("firebase-admin");
+
 
 require('dotenv').config();
 require('./Models/db');
@@ -22,13 +22,6 @@ app.use(cors({
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"]
 }));
-
-// Initialize Firebase Admin SDK
-const serviceAccount = require("./aiintplann-firebase-adminsdk-fbsvc-3c623c12d4.json"); // Replace with your service account file
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-});
-
 
 // Ping route
 app.get('/ping', (req, res) => {
