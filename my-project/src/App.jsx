@@ -28,6 +28,7 @@ import LoginForm from "./components/Login.jsx";
 import StudentInfo from "./components/OrganisationComponents/StudentInfo.jsx";
 import InterviewPage from "./components/OrganisationComponents/InterviewPage.jsx";
 import LayoutWithNavbar from "./components/LayoutWithNavbar";
+import RecentInterviews from "./components/OrganisationComponents/RecentInterviews.jsx";
 
 // Context API
 export const UserContext = createContext();
@@ -70,6 +71,7 @@ const App = () => {
       <Route path="/alljobs" element={<Alljobs />} />
       <Route path="/JDcreation" element={<JDcreation />} />
       <Route path="/setting" element={<Settings />} />
+      <Route  path="/RecentInterviews" element={<RecentInterviews/>}/>
     </Route>
 
   </Route>

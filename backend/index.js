@@ -8,7 +8,8 @@ const ProductRouter = require('./Routes/ProductRouter');
 const JobRouter = require('./Routes/JobRoutes');
 const cookieParser = require('cookie-parser');
 const interviewSessionRoutes = require("./Routes/interviewSession.routes");
-
+const interviewReportsRoutes  = require("./Routes/InterviewReport.Routes");
+const recentInterviewRoutes = require("./Routes/RecentInterview.Routes")
 
 require('dotenv').config();
 require('./Models/db');
@@ -36,6 +37,9 @@ app.use('/jobs', JobRouter);
 // app.use('/interview', interviewRouter);const interviewSessionRoutes = require("./routes/interviewSession.routes");
 
 app.use("/api/interview-sessions", interviewSessionRoutes);
+app.use("/api/interview-report", interviewReportsRoutes);
+app.use("/api",recentInterviewRoutes)
+
 
 
 

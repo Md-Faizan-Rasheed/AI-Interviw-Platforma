@@ -1,12 +1,14 @@
-export const API_BASE = "http://localhost:9000/api";
+export const API_BASE = "http://localhost:8080/api";
 
 // 🔹 create interview session
-export const createSession = async (jobId) => {
+export const createSession = async (studentId,jobId) => {
+  console.log("came to createsession")
+  console.log("Studentid",studentId,"JobId",jobId)
   const res = await fetch(`${API_BASE}/interview-sessions`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      candidateId: "TEMP_CANDIDATE_ID", // replace later
+      studentId, // replace later
       jobId
     })
   });
@@ -29,4 +31,52 @@ export const completeSession = async (sessionId) => {
   await fetch(`${API_BASE}/interview-sessions/${sessionId}/complete`, {
     method: "POST"
   });
+};
+
+
+
+export const extractAIReport = (content) => {
+  if (!content || typeof content !== "string") {
+    return { structured: null, reportText: "" };
+  }
+
+  let structured = null;
+  let reportText = "";
+
+  try {
+    /**
+     * 1️⃣ Extract JSON safely
+     * Looks for FIRST valid JSON object only
+     */
+    const jsonMatch = content.match(
+      /```json([\s\S]*?)```|(\{[\s\S]*?"recommendation"[\s\S]*?\})/
+    );
+
+    if (jsonMatch) {
+      const jsonString = jsonMatch[1] || jsonMatch[2];
+      structured = JSON.parse(jsonString);
+    }
+
+    /**
+     * 2️⃣ Extract human-readable report
+     */
+    const reportSplit = content.split("PART 2: HUMAN-READABLE REPORT");
+
+    if (reportSplit.length > 1) {
+      reportText = reportSplit[1].trim();
+    } else {
+      // fallback: remove JSON and show everything else
+      reportText = content.replace(jsonMatch?.[0] || "", "").trim();
+    }
+
+    return { structured, reportText };
+  } catch (error) {
+    console.error("AI parsing failed:", error);
+
+    // Fallback: show raw content
+    return {
+      structured: null,
+      reportText: content,
+    };
+  }
 };

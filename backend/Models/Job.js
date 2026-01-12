@@ -1,5 +1,6 @@
 // Models/Job.js
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
 const jobSchema = new mongoose.Schema({
     jobTitle: { type: String, required: true },

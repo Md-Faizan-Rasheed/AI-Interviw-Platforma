@@ -6,14 +6,15 @@ const InterviewSessionSchema = require("../Models/InterviewSession.Models");
 // POST /api/interview-sessions
 router.post("/", async (req, res) => {
   try {
-    const { candidateId, jobId } = req.body;
+    const { studentId, jobId } = req.body;
 
     const session = await InterviewSessionSchema.create({
-      candidateId,
+      studentId,
       jobId,
       status: "in_progress",
       startedAt: new Date()
     });
+    console.log("sessions",session)
 
     res.status(201).json(session);
   } catch (err) {

@@ -31,7 +31,7 @@ const validateRequest = (req, res, next) => {
 
 // Add a new job
 router.post('/add',async (req, res) => {
-    const { jobTitle, status, plainTextJobDescription, questions, userId } = req.body;
+    const {jobTitle, status, plainTextJobDescription, questions, userId } = req.body;
 
 
     if (!userId) {
@@ -506,19 +506,42 @@ router.post("/verify-otp", async (req, res) => {
 
 // Registration Route
 router.post("/save-student-details", async (req, res) => {
-    const { phoneNumber, studentName,email,adharNumber,resumeUrl } = req.body;
+    const {companyId,phoneNumber, studentName,email,adharNumber,resumeUrl } = req.body;
   
     const existingStudent = await Student.findOne({ phoneNumber });
     if (existingStudent) {
       return res.json({ success: false, message: "This number is already registered for an interview." });
     }
   
-    const newStudent = new Student({ phoneNumber, studentName,email, adharNumber,resumeUrl});
+    const newStudent = new Student({companyId, phoneNumber, studentName,email, adharNumber,resumeUrl});
     await newStudent.save();
   
-    res.json({ success: true, message: "Student registered successfully!" });
+
+  
+    res.json({ success: true,student_id:newStudent.id, message: "Student registered successfully!" });
   });
   
+
+  // routes/student.routes.js
+router.get("/by-company/:companyId", async (req, res) => {
+  try {
+    const { companyId } = req.params;
+
+    const students = await Student.find({ companyId });
+
+    res.json({
+      success: true,
+      students
+    });
+  } catch (err) {
+    console.error("Fetch students error:", err);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch students"
+    });
+  }
+});
+
   
 module.exports = router;
 

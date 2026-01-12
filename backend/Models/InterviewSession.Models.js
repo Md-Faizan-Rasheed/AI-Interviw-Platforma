@@ -3,7 +3,7 @@ const { Schema } = mongoose;
 
 const InterviewSessionSchema = new Schema(
   {
-    candidateId: {
+    studentId: {
       type: Schema.Types.ObjectId,
       required: true,
       ref: "students", // change if your model name differs
@@ -59,6 +59,6 @@ const InterviewSessionSchema = new Schema(
 );
 
 // Helpful compound index for faster lookups
-InterviewSessionSchema.index({ candidateId: 1, jobId: 1 });
+InterviewSessionSchema.index({ studentId: 1, jobId: 1 });
 
 module.exports = mongoose.model("InterviewSession", InterviewSessionSchema);

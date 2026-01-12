@@ -15,6 +15,7 @@ from google.oauth2 import service_account
 import tempfile
 import shutil
 
+
 load_dotenv()
 
 app = FastAPI()
@@ -29,7 +30,6 @@ app.add_middleware(
         "http://127.0.0.1:3000",
         "http://localhost:5173",
         "http://127.0.0.1:5173",
-
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -42,6 +42,10 @@ app.add_middleware(
 # OPENAI CONFIG
 # =========================
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+OPENAI_API_URL   = os.getenv("OPENAI_API_URL")
+SCOPES = os.getenv("SCOPES")
+SERVICE_ACCOUNT_FILE =os.getenv("SERVICE_ACCOUNT_FILE")
+DRIVE_FOLDER_ID = os.getenv("DRIVE_FOLDER_ID")
 
 if not OPENAI_API_KEY:
     raise RuntimeError("OPENAI_API_KEY not set")
@@ -122,6 +126,10 @@ async def openai_proxy(request: OpenAIRequest):
 
 @app.get("/")
 async def root():
+    print("ENV_CHECK:", os.getenv("ENV_CHECK"))
+    print("opena ai key",OPENAI_API_KEY)
+    print("open ai url",OPENAI_API_URL)
+    print("scopes",SCOPES,"SErvice acount file",SERVICE_ACCOUNT_FILE,"Drive folder id",DRIVE_FOLDER_ID)
     return {"status": "MongoDB connected successfully"}
 
 
@@ -158,11 +166,6 @@ async def get_job_details(_id: str):
         "questions": job.get("questions", [])
     }
 
-# -------------------- GOOGLE DRIVE CONFIG --------------------
-SCOPES = ["https://www.googleapis.com/auth/drive.file"]
-SERVICE_ACCOUNT_FILE = "service_account.json"
-DRIVE_FOLDER_ID = ""
-
 creds = service_account.Credentials.from_service_account_file(
     SERVICE_ACCOUNT_FILE, scopes=SCOPES
 )
@@ -178,11 +181,6 @@ def upload_to_drive(file_path: str, filename: str):
 
     media = MediaFileUpload(file_path, mimetype="application/pdf")
 
-    # file = drive_service.files().create(
-    #     body=file_metadata,
-    #     media_body=media,
-    #     fields="id, webViewLink"
-    # ).execute()
     file = drive_service.files().create(
     body={
         "name": filename,
