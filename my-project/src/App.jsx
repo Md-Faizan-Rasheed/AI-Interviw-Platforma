@@ -4,8 +4,6 @@ import Home from "./components/Home";
 import About from "./components/About";
 import Platform from "./components/Platform";
 import JDcreation from "./components/OrganisationComponents/Dashboard.jsx";
-import Pricing from "./components/Pricing";
-import Contact from "./components/Contact";
 import Popuppreplace from "./components/Popuppreplace";
 import SignIn from "./components/SignIn";
 import OrganisationSignup from "./components/OrganisationSignup";
@@ -29,7 +27,12 @@ import StudentInfo from "./components/OrganisationComponents/StudentInfo.jsx";
 import InterviewPage from "./components/OrganisationComponents/InterviewPage.jsx";
 import LayoutWithNavbar from "./components/LayoutWithNavbar";
 import RecentInterviews from "./components/OrganisationComponents/RecentInterviews.jsx";
-
+import StudentSignup from "./components/StudentsComponents/StudentSignup.jsx";
+import StudentSignin from "./components/StudentsComponents/StudentSignin.jsx";
+import StudentHomePage from "./components/StudentsComponents/StudentHomePage.jsx";
+import StudentInterviewPage from "./components/StudentsComponents/StudentInterviewPage.jsx";
+import ContactUsPage from "./components/OrganisationComponents/ContactUsPage.jsx";
+import PricingPage from "./components/OrganisationComponents/PricingPage.jsx";
 // Context API
 export const UserContext = createContext();
 
@@ -46,6 +49,11 @@ const App = () => {
   <Route path="/studentinfo/:id" element={<StudentInfo />} />
   <Route path="/interview/:id" element={<InterviewPage />} />
   <Route path="/jobs/:id" element={<JobDetails />} />
+  <Route path="/StudentSignup" element={<StudentSignup />} />
+    <Route path="/StudentSignin" element={<StudentSignin />} />
+   <Route path="/StudentHomePage/:studentId" element={<StudentHomePage />} />
+    <Route path="/StudentInterviewPage/:studentId" element={<StudentInterviewPage />} />
+
 
 
   {/* ✅ WITH NAVBAR */}
@@ -54,14 +62,15 @@ const App = () => {
     <Route path="/" element={<Home />} />
     <Route path="/about" element={<About />} />
     <Route path="/platform" element={<Platform />} />
-    <Route path="/pricing" element={<Pricing />} />
-    <Route path="/contact" element={<Contact />} />
     <Route path="/signin" element={<SignIn />} />
     <Route path="/popuppreplace" element={<Popuppreplace />} />
     <Route path="/organisationsignup" element={<OrganisationSignup />} />
     <Route path="/reset-password/:resetToken" element={<ResetPasswordPage />} />
-    <Route path="/login" element={<LoginForm />} />
-
+    <Route path="/login" element={<LoginForm />} /> 
+    <Route path="/PricingPage" element={<PricingPage />} />
+    <Route path="/ContactUsPage" element={<ContactUsPage />} />
+    
+   
     {/* 🔐 Protected */}
     <Route element={<Protectedroute />}>
       <Route path="/dashboard" element={<Dashboard />} />

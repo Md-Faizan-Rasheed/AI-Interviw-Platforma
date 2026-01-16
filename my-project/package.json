@@ -12,6 +12,7 @@
   "dependencies": {
     "@google/generative-ai": "^0.21.0",
     "axios": "^1.13.2",
+    "dotenv": "^17.2.3",
     "framer-motion": "^12.24.7",
     "lucide-react": "^0.475.0",
     "openai": "^6.15.0",

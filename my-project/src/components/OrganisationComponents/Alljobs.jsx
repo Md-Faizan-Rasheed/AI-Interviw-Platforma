@@ -333,9 +333,8 @@ const Alljobs = () => {
             .then(() => alert('Link copied to clipboard!'))
             .catch((err) => console.error('Failed to copy the text: ', err));
     };
-
+    console.log("user id , company id",userId)
     const handleJobClick = (_id) => navigate(`/jobs/${_id}?companyId=${userId}`);
-
     const handleDelete = async (id) => {
         if (!window.confirm('Are you sure you want to delete this job?')) return;
 
@@ -386,7 +385,7 @@ const Alljobs = () => {
 
     return (
         // <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-        <div className="flex min-h-screen bg-gray-100 mt-14">
+        <div className="flex min-h-screen bg-gray-100">
 
             <Onavbar />
             
@@ -534,7 +533,7 @@ const Alljobs = () => {
                                                     <ExternalLink className="w-4 h-4" />
                                                 </a>
                                                 <button
-                                                    onClick={() => handleCopy(`${window.location.origin}/jobs/${job._id}`)}
+                                                    onClick={() => handleCopy(`${window.location.origin}/jobs/${job._id}?companyId=${userId}`)}
                                                     className="p-2 text-gray-600 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
                                                     title="Copy Link"
                                                 >

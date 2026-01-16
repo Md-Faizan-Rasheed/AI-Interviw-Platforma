@@ -6,6 +6,7 @@ const StudentDetailsSchema = new Schema({
      companyId: {
       type: Schema.Types.ObjectId,
       required: true,
+      required: false,
       ref: "users",
       index: true,
     },
@@ -16,19 +17,16 @@ const StudentDetailsSchema = new Schema({
     },
     studentName: {
         type: String,
-        required: true,
         trim: true,
     },
     email: {
         type: String,
-        required: true,
         lowercase: true,
         trim: true,
         match: [/^\S+@\S+\.\S+$/, 'Please use a valid email address'],
     },
     adharNumber: {
         type: Number,
-        required: true,
     },
     otp: {
         type: String, // keep as String to preserve leading zeros
@@ -39,6 +37,13 @@ const StudentDetailsSchema = new Schema({
         required: false,
         trim: true,
     },
+   skills: [
+  {
+    skill: { type: String, required: true },
+    level: { type: String, enum: ["Beginner", "Intermediate", "Expert"], default: "Beginner" }
+  }
+]
+
 }, { timestamps: true });
 
 const Student = mongoose.model("Student", StudentDetailsSchema);

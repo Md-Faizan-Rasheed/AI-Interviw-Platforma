@@ -1,21 +1,23 @@
+
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import axios from "axios";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 
-const StudentInfo = () => {
+const StudentSignup = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
-  const companyId = queryParams.get("companyId"); // ✅ from URL
+  const companyIdFromUrl = queryParams.get("companyId");
 
   const navigate = useNavigate();
   const { id } = useParams();
-  const jobid = id;
+  const jobId = id;
+  const [otpVerificationStatus, setOtpVerificationStatus] = useState(false);
+
 
   /* ===================== STATE ===================== */
-
   const [formData, setFormData] = useState({
-    companyId: "", // ❗ do NOT initialize from URL here
+    companyId: "64b7f1c2a9e4c8f5d1234567",
     phoneNumber: "",
     studentName: "",
     email: "",
@@ -27,27 +29,25 @@ const StudentInfo = () => {
   const [showOtpInput, setShowOtpInput] = useState(false);
   const [loading, setLoading] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
-  const [otpVerificationStatus, setOtpVerificationStatus] = useState(false);
+  const [otpVerified, setOtpVerified] = useState(false);
   const [resumeFile, setResumeFile] = useState(null);
   const [resumeUploading, setResumeUploading] = useState(false);
   const [resumeUploaded, setResumeUploaded] = useState(false);
 
-  /* ===================== FIX: SYNC companyId ===================== */
+  /* ===================== SYNC COMPANY ID ===================== */
+  useEffect(() => {
+    if (companyIdFromUrl) {
+      setFormData((prev) => ({ ...prev, companyId: companyIdFromUrl }));
+    }
+  }, [companyIdFromUrl]);
 
-useEffect(() => {
-  if (companyId) {
-    console.log("CompanyId from URL:", companyId); // ✅ DEBUG
-    setFormData((prev) => ({
-      ...prev,
-      companyId: companyId,
-    }));
-  } else {
-    console.warn("No companyId found in URL"); // ✅ WARNING
-  }
-}, [companyId]);
+  /* ===================== AXIOS CONFIG ===================== */
+  const api = axios.create({
+    baseURL: "http://localhost:8080/students",
+    withCredentials: true, // ✅ allows JWT cookies
+  });
 
   /* ===================== HANDLERS ===================== */
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -56,49 +56,64 @@ useEffect(() => {
     }));
   };
 
+  // ✅ Send OTP
   const handleVerifyPhone = async () => {
+    if (!formData.phoneNumber) {
+      alert("Please enter phone number first.");
+      return;
+    }
     setLoading(true);
     try {
-      const response = await axios.post(
-        "http://localhost:8080/jobs/send-otp",
-        { phoneNumber: formData.phoneNumber }
-      );
+      const res = await api.post("/send-otp", {
+        phoneNumber: formData.phoneNumber,
+      });
 
-      if (response.data.success) {
+      if (res.data.success) {
         setShowOtpInput(true);
         setOtpSent(true);
+      } else {
+        alert(res.data.message || "Failed to send OTP");
       }
-    } catch {
+    } catch (err) {
+      console.error(err);
       alert("Error sending OTP");
     } finally {
       setLoading(false);
     }
   };
 
+  // ✅ Verify OTP (but don’t navigate yet)
   const handleVerifyOtp = async () => {
+    if (!formData.otp) {
+      alert("Enter OTP before verifying.");
+      return;
+    }
     setLoading(true);
     try {
-      const response = await axios.post(
-        "http://localhost:8080/jobs/verify-otp",
-        {
-          phoneNumber: formData.phoneNumber,
-          otp: formData.otp,
-        }
-      );
+      const res = await api.post("/verify-otp", {
+        phoneNumber: formData.phoneNumber,
+        otp: formData.otp,
+      });
 
-      if (response.data.success) {
-        alert("OTP Verified Successfully");
+      if (res.data.success) {
         setOtpVerificationStatus(true);
+        alert("OTP verified successfully ✅");
+        setOtpVerified(true);
+
+        // store studentId temporarily
+        localStorage.setItem("studentId", res.data.studentId);
       } else {
-        alert("Invalid OTP");
+        alert(res.data.message || "Invalid or expired OTP");
       }
-    } catch {
+    } catch (err) {
+      console.error(err);
       alert("Error verifying OTP");
     } finally {
       setLoading(false);
     }
   };
 
+  // ✅ Resume Upload
   const handleResumeChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -151,124 +166,80 @@ useEffect(() => {
     }
   };
 
-  /* ===================== SUBMIT ===================== */
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  /* ===================== SUBMIT FORM ===================== */
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  // ✅ Use companyId from URL as fallback
-  const finalCompanyId = formData.companyId || companyId;
-  console.log("comapanyId",finalCompanyId)
-  if (!finalCompanyId) {
-    alert("Company ID missing. Please check the URL.");
-    return;
-  }
+    const finalCompanyId = formData.companyId || companyIdFromUrl;
 
-  if (!otpVerificationStatus) {
-    alert("Verify OTP first");
-    return;
-  }
+    // if (!finalCompanyId) {
+    //   alert("Missing company ID. Please check your link.");
+    //   return;
+    // }
 
-  // if (!formData.resumeUrl) {
-  //   alert("Upload resume");
-  //   return;
-  // }
+    if (!otpVerified) {
+      alert("Please verify OTP first.");
+      return;
+    }
 
-  // ✅ Create submission payload with guaranteed companyId
-  const submissionData = {
-    ...formData,
-    companyId: finalCompanyId
+    // if (!formData.resumeUrl) {
+    //   alert("Please upload your resume first.");
+    //   return;
+    // }
+
+    const submissionData = {
+      ...formData,
+      companyId: finalCompanyId,
+    };
+
+    setLoading(true);
+    try {
+      const res = await api.post("/save-student-details", submissionData);
+
+      if (res.data.success) {
+        alert("Student details saved successfully 🎉");
+        console.log("Student details response:", res.data);
+        
+        // ✅ Go to home page only now
+        const studentId = res.data.student_id || localStorage.getItem("studentId");
+        console.log("Navigating to student home page with ID:", studentId);
+        navigate(`/StudentHomePage/${studentId}`);
+      } else {
+        alert(res.data.message || "Already registered or save failed");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error submitting student details");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  console.log("Submitting formData:", submissionData); // ✅ DEBUG
+  /* ===================== AUTO-LOGIN (JWT check) ===================== */
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const res = await api.get("/check-auth");
+        console.log("Auth check response:", res.data);
+        const studentId =  localStorage.getItem("studentId");
 
-  try {
-    const response = await axios.post(
-      "http://localhost:8080/jobs/save-student-details",
-      submissionData // ✅ Use this instead of formData
-    );
+        if (res.data.success) {
+            console.log("User already logged in, redirecting to home page.");
+         console.log("Auth check response:", res);
 
-    if (response.data.success) {
-      alert("Student registered successfully");
-
-      const studentId = response.data.student_id;
-
-      // ❗ reset WITHOUT removing companyId
-      setFormData((prev) => ({
-        companyId: finalCompanyId, // ✅ Keep companyId
-        phoneNumber: "",
-        studentName: "",
-        email: "",
-        adharNumber: "",
-        otp: "",
-        resumeUrl: "",
-      }));
-
-      navigate(`/interview/${jobid}?studentId=${studentId}`);
-    } else {
-      alert("Already registered");
-    }
-  } catch (err) {
-    console.error(err);
-    alert("Submission failed");
-  }
-};
-
-
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-
-  //   if (!formData.companyId) {
-  //     alert("Company ID missing");
-  //     return;
-  //   }
-
-  //   if (!otpVerificationStatus) {
-  //     alert("Verify OTP first");
-  //     return;
-  //   }
-
-  //   if (!formData.resumeUrl) {
-  //     alert("Upload resume");
-  //     return;
-  //   }
-
-  //   console.log("Submitting formData:", formData); // ✅ DEBUG
-
-  //   try {
-  //     const response = await axios.post(
-  //       "http://localhost:8080/jobs/save-student-details",
-  //       formData
-  //     );
-
-  //     if (response.data.success) {
-  //       alert("Student registered successfully");
-
-  //       const studentId = response.data.student_id;
-
-  //       // ❗ reset WITHOUT removing companyId
-  //       setFormData((prev) => ({
-  //         ...prev,
-  //         phoneNumber: "",
-  //         studentName: "",
-  //         email: "",
-  //         adharNumber: "",
-  //         otp: "",
-  //         resumeUrl: "",
-  //       }));
-
-  //       navigate(`/interview/${jobid}?studentId=${studentId}`);
-  //     } else {
-  //       alert("Already registered");
-  //     }
-  //   } catch (err) {
-  //     console.error(err);
-  //     alert("Submission failed");
-  //   }
-  // };
+          navigate(`/StudentHomePage/${studentId}`); // Redirect if logged in
+        }
+      } catch (err) {
+        console.warn("Auth check skipped");
+      }
+    };
+    checkAuth();
+  }, [navigate]);
 
   /* ===================== UI ===================== */
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 py-12 px-4 sm:px-6 lg:px-8">
+
       <motion.div
         initial={{ opacity: 0, y: -30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -618,8 +589,9 @@ const handleSubmit = async (e) => {
           </div>
         </motion.div>
       </motion.div>
+  
     </div>
   );
 };
 
-export default StudentInfo;
+export default StudentSignup;

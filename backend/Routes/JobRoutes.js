@@ -10,7 +10,8 @@ const jwt = require('jsonwebtoken');
 const nodemailer = require("nodemailer");
 const bcrypt = require('bcrypt');
 const twilio = require("twilio");
-const { default: mongoose } = require('mongoose');
+// const { default: mongoose } = require('mongoose');
+const mongoose = require("mongoose");
 const Student = require("../Models/Studentdetails.Model"); // Adjust path as needed
 // Import dotenv and configure it at the top of the file
 require('dotenv').config();
@@ -542,6 +543,154 @@ router.get("/by-company/:companyId", async (req, res) => {
   }
 });
 
-  
+// router.post("/check-student",async (req, res) => {
+//   try {
+//     const { phoneNumber } = req.body;
+
+//     const student = await Student.findOne({ phoneNumber });
+
+//     if (!student) {
+//       return res.status(404).json({
+//         success: false,
+//         exists: false,
+//         message:
+//           "User with this mobile number is not registered. Please register first to sign in successfully."
+//       });
+//     }
+
+//     return res.json({
+//       success: true,
+//       exists: true,
+//       studentId: student._id  
+//     });
+
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({
+//       success: false,
+//       message: "Internal server error"
+//     });
+//   }
+// })
+
+
+// router.patch("/update-skills", async (req, res) => {
+//   try {
+//     const { studentId, skills } = req.body;
+
+//     console.log("Received skills update:", studentId, skills);
+
+//     // 1️⃣ Validate studentId
+//     if (!studentId) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "StudentId is required"
+//       });
+//     }
+
+//     if (!mongoose.Types.ObjectId.isValid(studentId)) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Invalid StudentId"
+//       });
+//     }
+
+//     // 2️⃣ Validate and normalize skills
+//     if (!skills || !Array.isArray(skills)) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Skills must be an array of { skill, level }"
+//       });
+//     }
+
+//     // 3️⃣ Validate each skill object
+//     const validLevels = ["Beginner", "Intermediate", "Expert"];
+//     const formattedSkills = skills
+//       .filter(s => s && s.skill)
+//       .map(s => ({
+//         skill: s.skill.trim(),
+//         level: validLevels.includes(s.level) ? s.level : "Beginner"
+//       }));
+
+//     // 4️⃣ Prevent empty update
+//     if (formattedSkills.length === 0) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "At least one valid skill is required"
+//       });
+//     }
+
+//     // 5️⃣ Update student document
+//     const updatedStudent = await Student.findByIdAndUpdate(
+//       studentId,
+//       { skills: formattedSkills },
+//       { new: true }
+//     ).select("studentName skills");
+
+//     if (!updatedStudent) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Student not found"
+//       });
+//     }
+
+//     // ✅ 6️⃣ Success response
+//     return res.json({
+//       success: true,
+//       message: "Skills updated successfully",
+//       student: updatedStudent
+//     });
+
+//   } catch (error) {
+//     console.error("Update skills error:", error);
+//     res.status(500).json({
+//       success: false,
+//       message: "Internal server error"
+//     });
+//   }
+// });
+
+
+
+// router.get("/student-skill/:studentId", async (req, res) => {
+//   try {
+//     const { studentId } = req.params;
+
+//     if (!mongoose.Types.ObjectId.isValid(studentId)) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Invalid studentId"
+//       });
+//     }
+
+//     const student = await Student.findById(studentId).select("skills studentName");
+
+//     if (!student) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Student not found"
+//       });
+//     }
+
+//     return res.json({
+//       success: true,
+//       student: {
+//         id: student._id,
+//         studentName: student.studentName,
+//         skills: student.skills || []
+//       }
+//     });
+
+//   } catch (error) {
+//     console.error("Fetch student error:", error);
+//     res.status(500).json({
+//       success: false,
+//       message: "Internal server error"
+//     });
+//   }
+// });
+
+
+
 module.exports = router;
 

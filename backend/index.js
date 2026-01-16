@@ -10,6 +10,7 @@ const cookieParser = require('cookie-parser');
 const interviewSessionRoutes = require("./Routes/interviewSession.routes");
 const interviewReportsRoutes  = require("./Routes/InterviewReport.Routes");
 const recentInterviewRoutes = require("./Routes/RecentInterview.Routes")
+const StudentRouter = require('./Routes/Student.Routes');
 
 require('dotenv').config();
 require('./Models/db');
@@ -21,7 +22,7 @@ app.use(cookieParser());
 app.use(cors({
     origin: "http://localhost:5173",  // Allows all domains
     credentials: true, // ✅ Allow cookies
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    methods: ["GET", "POST", "PUT", "DELETE","PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
@@ -39,7 +40,7 @@ app.use('/jobs', JobRouter);
 app.use("/api/interview-sessions", interviewSessionRoutes);
 app.use("/api/interview-report", interviewReportsRoutes);
 app.use("/api",recentInterviewRoutes)
-
+app.use('/students',StudentRouter);
 
 
 

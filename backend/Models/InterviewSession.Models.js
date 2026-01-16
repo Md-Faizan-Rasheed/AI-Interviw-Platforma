@@ -12,7 +12,8 @@ const InterviewSessionSchema = new Schema(
 
     jobId: {
       type: Schema.Types.ObjectId,
-      required: true,
+      // required: true,
+      required:false,
       ref: "jobs",
       index: true,
     },

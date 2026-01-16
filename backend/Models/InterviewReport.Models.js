@@ -27,7 +27,8 @@ const InterviewReportSchema = new Schema(
 
     jobTitle: {
       type: String,
-      required: true,
+      // required: true,
+        required:false,
       trim: true,
     },
 
